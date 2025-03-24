@@ -1,0 +1,183 @@
+wip_fields:
+  晶圆厂:
+    和舰科技:  # 爬虫
+      header: 0
+      names:
+        purchaseOrder: "PO"
+        itemName: "SHP_PRD_NO"
+        lot: "LOT"
+        qty: "WIP_QTY"
+        status: "STAGE"
+        stage: "ROUTEDESC"
+        layerCount: "ROUTESEQUENCE"
+        currentPosition: "ROUTE_POSITION"
+        forecastDate: "SHIP_FCST_DATE"
+    
+    力积电:
+      header: 3
+      names:
+        purchaseOrder: "PO_NO"
+        itemName: "PRODUCT"
+        lot: "LOT_ID"
+        qty: "QTY"
+        status: "STATUS"
+        stage: "LAYER"
+        layerCount: "LAYER_COUNT"
+        remainLayer: "REMAIN_LAYER"
+        forecastDate: "FORECAST_DATE"
+  
+    上华FAB1:
+      header: 0
+      names:
+        purchaseOrder: "PO"
+        itemName: "CUST_PARTNAME" 
+        lot: "LOT_ID"
+        qty: "CURRENT_QTY"
+        status: "STATUS"
+        stage: "STAGE"
+        layerCount: "STAGE_STEP_NO"
+        forecastDate: "FORECAST_FAB_OUT_DATE"
+
+    上华FAB2:
+      header: 0
+      names:
+        purchaseOrder: "PO"
+        itemName: "CUST_PARTNAME" 
+        lot: "LOT_ID"
+        qty: "CURRENT_QTY"
+        status: "STATUS"
+        stage: "STAGE"
+        layerCount: "STAGE_STEP_NO"
+        forecastDate: "FORECAST_FAB_OUT_DATE"
+      
+    荣芯:
+      header: 0
+      names:
+        purchaseOrder: "PO"
+        itemName: "Customer\nDevice"
+        lot: "Lot ID"
+        qty: "Wafer\nQty"
+        status: "Lot status"
+        stage: "Current Stage"
+        layerCount: "Total layers"
+        remainLayer: "Rem. Layers"
+        forecastDate: "Forecast Fab Out Date"
+      
+  data_format:
+    - purchaseOrder
+    - itemName
+    - lot
+    - qty
+    - status
+    - stage
+    - layerCount
+    - remainLayer
+    - currentPosition
+    - forecastDate
+    - supplier
+    - finished_at
+
+
+  封装厂:
+    池州华宇:
+      关键字段映射:
+        客户订单号(Customer PO#): "订单号"
+        研磨(Grinding): "研磨"
+        切割(Dicing Saw): "切割"
+        待装片(Waiting For DB): "待装片"
+        装片1(DB1): "装片"
+        银胶固化1(Epoxy curing 1): "银胶固化"
+        PLASMA1: "等离子清洗1"
+        键合(WB): "键合"
+        三目检(3th VI): "三目检"
+        PLASMA2: "等离子清洗2"
+        塑封(MD): "塑封"
+        后固化: "后固化"
+        IR_REFLOW: "回流焊"
+        电镀(plating): "电镀"
+        打印(marking): "打印"
+        后切割(PKG SAW): "后切割"
+        切筋成型(trim/form): "切筋成型"
+        测编打印(FT+MARK+TR): "测编打印"
+        外观检(VI): "外观检"
+        包装(PACKING): "包装"
+        待入库(Waiting Storage): "待入库"
+        TOTAL(TOTAL): "在线合计"
+        库存数量(Stock): "仓库库存"
+        扣留信息(Hold): "扣留信息"
+
+    山东汉旗:
+      关键字段映射:
+        客户订单号: "订单号"
+        Die_Bonding粘片: "装片"
+        Pre_Curing前固化: "银胶固化"
+        Wire_Bonding键合: "键合"
+        Mol_ding模封: "塑封"
+        After_Curing后固化: "后固化"
+        Plating电镀: "电镀"
+        Bakebefore_Mark打印前烘烤: "打印前烘烤"
+        Mar_king打印: "Mar_king打印"
+        Trim_Form切筋打弯: "切筋成型"
+        Testing_Marking测试打印: "测试打印"
+        Testtu_braid测试编带: "测试编带"
+        braid编带: "编带"
+        Testtu_bassembly测试管装: "测试管装"
+        Packing包装: "包装"
+        在线合计: "在线合计"
+        库存: "仓库库存"
+
+    data_format:
+      - 订单号
+      - 封装厂
+      - 当前工序
+      - 预计交期
+      - 次日预计
+      - 三日预计
+      - 七日预计
+      - 仓库库存
+      - 扣留信息
+      - 在线合计
+      - 研磨
+      - 切割
+      - 待装片
+      - 装片
+      - 银胶固化
+      - 等离子清洗1
+      - 键合
+      - 三目检
+      - 等离子清洗2
+      - 塑封
+      - 后固化
+      - 回流焊
+      - 电镀
+      - 打印
+      - 后切割
+      - 切筋成型
+      - 测编打印
+      - 外观检
+      - 包装
+      - 待入库
+      - finished_at
+      
+
+    craft_forecast:
+      研磨: 35
+      切割: 34
+      待装片: 33
+      装片: 31
+      银胶固化: 28
+      等离子清洗1: 25
+      键合: 15
+      三目检: 14
+      等离子清洗2: 14
+      塑封: 13
+      后固化: 10
+      回流焊: 9
+      电镀: 8
+      打印: 7
+      后切割: 6
+      切筋成型: 5
+      测编打印: 4
+      外观检: 3
+      包装: 2
+      待入库: 1

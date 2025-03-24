@@ -1,0 +1,24 @@
+# 基础依赖
+python-dotenv==1.0.0
+pyyaml==6.0.1
+
+# 数据库
+sqlalchemy==2.0.23
+pyodbc==4.0.39
+
+# 邮件处理
+imap-tools==1.0.0
+chardet==5.2.0
+
+# 数据处理
+pandas==1.4.4
+openpyxl==3.1.2
+xlrd==2.0.1
+
+# 爬虫
+requests==2.31.0
+beautifulsoup4==4.12.2
+parsel==1.8.1
+
+# 任务调度
+apscheduler==3.10.4

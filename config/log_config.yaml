@@ -1,0 +1,35 @@
+# 日志基础配置
+log_dir: logs
+
+# 日志文件配置
+file_config:
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+  encoding: utf-8
+
+# 日志级别配置
+levels:
+  file: DEBUG
+  console: INFO
+
+# 日志格式
+format:
+  default: '[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s'
+  detailed: '[%(asctime)s] [%(levelname)s] [%(name)s] [%(filename)s:%(lineno)d] %(message)s'
+
+# 日志文件命名格式
+file_name_format: '{module_name}_{date}.log'
+
+# 日期格式
+date_format: '%Y-%m-%d'
+
+# 时间格式
+time_format: '%Y-%m-%d %H:%M:%S'
+
+# 日志级别映射
+log_levels:
+  DEBUG: 10
+  INFO: 20
+  WARNING: 30
+  ERROR: 40
+  CRITICAL: 50 

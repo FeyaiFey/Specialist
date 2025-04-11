@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Date, DateTime
-from service.dataBaseService.models.base import BaseModel
+from modules.dataBaseService.models.base import BaseModel
 from datetime import date, datetime
 
 class WipAssy(BaseModel):

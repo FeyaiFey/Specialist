@@ -146,8 +146,11 @@ class HJTCCrawler(BaseCrawler):
             wip_fab_bll.update_supplier_progress(df.to_dict(orient="records"))
             self.logger.info(f"和舰科技数据更新完成")
             self.close()
-            # 移动文件
-            move_file(filepath, os.getenv("HJTC_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}")
+            # 移动文件,若存在则覆盖
+            target_path = os.getenv("HJTC_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}"
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            move_file(filepath, target_path)
         except Exception as e:
             self.logger.error(f"和舰科技数据更新失败: {str(e)}")
             move_file(filepath, os.getenv("HJTC_OUTPUT_DIR").replace("pending", "failed")+f"/{os.path.basename(filepath)}")

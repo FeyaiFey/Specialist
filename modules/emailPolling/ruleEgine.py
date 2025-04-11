@@ -193,7 +193,7 @@ class RuleEngine:
         # 检查每个规则
         for rule in self.rules.get('rules', []):
             if rule.get('enabled', True) and self.check_rule_conditions(email_data, rule):
-                self.logger.info(f"邮件匹配规则: {rule.get('name', 'unnamed_rule')}")
+                self.logger.debug(f"邮件匹配规则: {rule.get('name', 'unnamed_rule')}")
                 return {
                     'actions': rule.get('actions', {}),
                     'name': rule.get('name', 'unnamed_rule'),

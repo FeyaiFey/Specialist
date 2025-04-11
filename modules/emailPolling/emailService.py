@@ -146,7 +146,7 @@ class EmailService:
             if match_result['actions'].get('mark_as_read', True):
                 email_helper.mark_email_as_read(email_id)
 
-            self.logger.debug(f"邮件处理完成: [{category}] {email_data['subject']}")
+            self.logger.info(f"邮件处理完成: [{match_result['supplier']}-{category}] {email_data['subject']}")
             return match_result
             
         except Exception as e:

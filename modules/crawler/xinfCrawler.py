@@ -5,8 +5,12 @@ import os
 import pandas as pd
 from datetime import datetime
 
+from modules.dataBaseService.bll.wip_assy import WipAssyBLL
 from modules.crawler.base import BaseCrawler
+from modules.excelProcess.supplier.xinfeng_wip_handler import XinfengWipHandler
 from utils.helpers import move_file
+
+
 class XinfCrawler(BaseCrawler):
     """爬取江苏芯丰WIP数据"""
     
@@ -158,9 +162,30 @@ class XinfCrawler(BaseCrawler):
         """运行爬虫任务"""
         if not self.login():
             return False
-            
-        # 获取数据
-        filepath = self.get_wip_data()
+        
+        try:
+            # 获取数据
+            filepath = self.get_wip_data()
 
-        self.close()
+            # 处理数据
+            xinfeng_wip_handler = XinfengWipHandler()
+            df = xinfeng_wip_handler.process()
+
+            # 更新数据库
+            wip_assy_bll = WipAssyBLL()
+            wip_assy_bll.update_supplier_progress(df.to_dict(orient="records"))
+
+            self.close()
+
+             # 移动文件,若存在则覆盖
+            target_path = os.getenv("XINF_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}"
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            move_file(filepath, target_path)
+            
+        except Exception as e:
+            self.logger.error(f"江苏芯丰进度表处理失败: {str(e)}")
+            move_file(filepath, os.getenv("XINF_OUTPUT_DIR").replace("pending", "failed")+f"/{os.path.basename(filepath)}")
+            return False
+        
         return True

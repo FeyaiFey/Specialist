@@ -3,12 +3,15 @@ import sys
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor
+from dotenv import load_dotenv
 
 from modules.crawler.crawlerService import CrawlerService
 from modules.emailPolling.emailProcess import EmailProcess
 from modules.dataBaseService.batchUploadDataBase import HisemiWipAnalyzeService
 from utils.logger import Logger
 
+
+load_dotenv()
 # 初始化日志
 logger = Logger().get_logger('main')
 

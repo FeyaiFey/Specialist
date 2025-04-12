@@ -98,6 +98,11 @@ class EmailHelper:
             # 构建文件路径
             filepath = folder_path.joinpath(filename)
             
+            # 检查特定文件名是否已存在
+            if "苏州华芯微电子股份有限公司的封装产品进展表" in filename and filepath.exists():
+                self.logger.debug(f"跳过已存在的文件: {filename}")
+                return None
+            
             # 保存文件
             with filepath.open('wb') as f:
                 f.write(part.get_payload(decode=True))
@@ -117,7 +122,7 @@ class EmailHelper:
             msg = email.message_from_bytes(email_body)
             return msg
         except Exception as e:
-            self.logger.error(f"解析邮件失败: {str(e)}")
+            self.logger.error(f"解析邮件{email_id}失败: {str(e)}")
             return None
     
     def parse_email_data(self, msg: message.Message, email_id: bytes) -> Dict:

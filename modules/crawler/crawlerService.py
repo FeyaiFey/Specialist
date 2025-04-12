@@ -22,8 +22,8 @@ class CrawlerService:
         """初始化爬虫服务"""
         self.logger = Logger().get_logger('crawlerService')
         self.crawlers: Dict[str, Type[BaseCrawler]] = {
-            # 'xinf': XinfCrawler,
-            # 'hjtc': HJTCCrawler,
+            'xinf': XinfCrawler,
+            'hjtc': HJTCCrawler,
             'jcet': JcetCrawler
         }
         # 创建后台调度器
@@ -65,7 +65,7 @@ class CrawlerService:
             next_run_time = self.job.next_run_time
             self.logger.info(f"下次运行时间: {next_run_time}")
             
-    def start(self, hours: int = 1) -> None:
+    def start(self, hours: int = 2) -> None:
         """
         启动爬虫服务
         

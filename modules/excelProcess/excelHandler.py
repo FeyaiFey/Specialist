@@ -29,14 +29,14 @@ class ExcelHandler:
         '晶圆进度表_上华FAB1': CsmcFAB1Handler,
         '晶圆进度表_上华FAB2': CsmcFAB2Handler,
         '晶圆进度表_力积电': PsmcHandler,
-        # 可以继续添加其他供应商
+        # 可以继续添加其他供应商,爬虫项目除外
     }
     
     def __init__(self):
         """
         初始化文件处理器
         """
-        self.logger = Logger('excel_handler')
+        self.logger = Logger().get_logger('excel_handler')
         
     def process_excel(self, match_result: Dict) -> Any:
         """

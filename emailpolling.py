@@ -1,8 +1,38 @@
-from modules.emailPolling.emailService import EmailService
+import signal
+import sys
+import time
 
-email_service = EmailService()
-email_service.connect()
-ids = email_service.get_unread_emails()
-for id in ids:
-    email_service.process_email(id)
-email_service.disconnect()
+from modules.emailPolling.emailProcess import EmailProcess
+from utils.logger import Logger
+
+logger = Logger().get_logger('emailpolling')
+
+def signal_handler(signum, frame):
+    """信号处理函数，用于优雅地停止服务"""
+    print("\n正在停止邮件处理服务...")
+    service.stop()
+    sys.exit(0)
+
+if __name__ == "__main__":
+    # 注册信号处理
+    signal.signal(signal.SIGINT, signal_handler)  # Ctrl+C
+    signal.signal(signal.SIGTERM, signal_handler)  # 终止信号
+
+    # 创建爬虫服务
+    service = EmailProcess()
+    
+    try:
+        # 启动服务
+        service.start(minutes=10)
+        
+        # 保持程序运行
+        while True:
+            time.sleep(1)
+            
+    except KeyboardInterrupt:
+        # 优雅地停止服务
+        logger.info("\n正在停止邮件处理服务...")
+        service.stop()
+    except Exception as e:
+        logger.error(f"发生错误: {str(e)}")
+        service.stop()

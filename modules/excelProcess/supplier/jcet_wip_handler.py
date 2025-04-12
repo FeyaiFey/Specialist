@@ -55,12 +55,21 @@ class JcetWipHandler():
 
             df["扣留信息"] = pd.NaT
 
+            self.logger.debug(df)
+
             numerical_columns = list(self.craft_forecast.keys())
             # 只处理存在的数值列
             existing_numerical_columns = [col for col in numerical_columns if col in df.columns]
-            df[existing_numerical_columns] = df[existing_numerical_columns].apply(pd.to_numeric, errors='coerce').fillna(0)
+            
+            # 处理千分位符号并转换为数字
+            for col in existing_numerical_columns:
+                df[col] = df[col].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce').fillna(0)
+            
+            # 处理在线合计和仓库库存
+            df["在线合计"] = df["在线合计"].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce').fillna(0)
+            df["仓库库存"] = df["仓库库存"].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce').fillna(0)
 
-            df[["在线合计","仓库库存"]] = df[["在线合计","仓库库存"]].apply(pd.to_numeric, errors='coerce').fillna(0)
+            self.logger.debug(df)
 
             # 从后往前遍历numerical_columns，找到第一个值大于0的列名
             df["当前工序"] = df.apply(

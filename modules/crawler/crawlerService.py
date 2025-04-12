@@ -22,8 +22,8 @@ class CrawlerService:
         """初始化爬虫服务"""
         self.logger = Logger().get_logger('crawlerService')
         self.crawlers: Dict[str, Type[BaseCrawler]] = {
-            'xinf': XinfCrawler,
-            'hjtc': HJTCCrawler,
+            # 'xinf': XinfCrawler,
+            # 'hjtc': HJTCCrawler,
             'jcet': JcetCrawler
         }
         # 创建后台调度器

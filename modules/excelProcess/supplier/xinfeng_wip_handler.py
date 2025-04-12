@@ -32,6 +32,11 @@ class XinfengWipHandler():
         try:
             # 读取Excel文件并选择需要的列
             df = pd.read_excel(self.file_dir, sheet_name="Sheet1")
+
+            # 检查DataFrame是否为空
+            if df.empty:
+                self.logger.error("Excel文件内容为空")
+                return None
             df = df[['customerSoCode', 'currentqty', 'stepName']]
 
             # 按customerSoCode和stepName分组求和

@@ -6,23 +6,36 @@ import json
 import re
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
+from bs4 import BeautifulSoup
+from typing import Any
 
 from modules.dataBaseService.bll.wip_assy import WipAssyBLL
 from modules.crawler.base import BaseCrawler
-# from modules.excelProcess.supplier.jcet_wip_handler import JcetWipHandler
+from modules.excelProcess.supplier.jcet_wip_handler import JcetWipHandler
 from utils.helpers import move_file
+
 
 class JcetCrawler(BaseCrawler):
     """爬取长电科技WIP数据"""
     
     # 基础URL
     BASE_URL = "https://jcetreport.jcetglobal.com:8995/WebReport/decision"
-
+    
     def __init__(self):
         """
         初始化长电科技爬虫
         """
         super().__init__()
+        
+        # 配置文件路径
+        self.config_dir = Path(os.path.abspath("config"))
+        self.COOKIE_FILE = self.config_dir / "jcet_cookies.json"
+        self.CURL_FILE = self.config_dir / "cookie.txt"
+        self.TOKEN_FILE = self.config_dir / "jcet_token.json"
+        
+        # 创建配置目录
+        self.config_dir.mkdir(parents=True, exist_ok=True)
         
         # 更新请求头
         self.headers.update({
@@ -48,7 +61,7 @@ class JcetCrawler(BaseCrawler):
             token_data: token数据
         """
         try:
-            token_path = r'config\jcet_token.json'
+            token_path = Path(self.TOKEN_FILE)
             token_path.parent.mkdir(parents=True, exist_ok=True)
             
             with open(token_path, 'w', encoding='utf-8') as f:
@@ -67,16 +80,15 @@ class JcetCrawler(BaseCrawler):
             dict: token数据
         """
         try:
-            token_path = r'config\jcet_token.json'
-            if not os.path.exists(token_path):
+            if not os.path.exists(self.TOKEN_FILE):
                 return {}
                 
-            with open(token_path, 'r', encoding='utf-8') as f:
+            with open(self.TOKEN_FILE, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
             self.logger.error(f"加载Token失败: {str(e)}")
             return {}
-    
+
     def refresh_token(self) -> bool:
         """
         刷新token
@@ -101,7 +113,7 @@ class JcetCrawler(BaseCrawler):
                 verify=False
             )
             
-            self.logger.debug(f"登录响应: {response.text}")
+            # self.logger.debug(f"登录响应: {response.text}")
             
             if response.status_code == 200:
                 data = response.json()
@@ -125,7 +137,7 @@ class JcetCrawler(BaseCrawler):
                 "tokenTimeOut": 1209599999  # 从截图中看到的超时时间
             }
             
-            self.logger.debug(f"刷新Token请求数据: {refresh_data}")
+            # self.logger.debug(f"刷新Token请求数据: {refresh_data}")
             
             response = self.session.post(
                 refresh_url, 
@@ -134,7 +146,7 @@ class JcetCrawler(BaseCrawler):
                 verify=False
             )
             
-            self.logger.debug(f"刷新Token响应: {response.text}")
+            # self.logger.debug(f"刷新Token响应: {response.text}")
             
             if response.status_code == 200:
                 data = response.json()
@@ -150,7 +162,7 @@ class JcetCrawler(BaseCrawler):
         except Exception as e:
             self.logger.error(f"刷新Token失败: {str(e)}")
             return False
-        
+
     def extract_cookies_from_curl(self, curl_command: str) -> dict:
         """
         从cURL命令中提取Cookie和Token
@@ -169,7 +181,7 @@ class JcetCrawler(BaseCrawler):
             cookie_match = re.search(cookie_pattern, curl_command)
             if cookie_match:
                 cookie_str = cookie_match.group(1)
-                self.logger.debug(f"从-b参数提取的Cookie字符串: {cookie_str}")
+                # self.logger.debug(f"从-b参数提取的Cookie字符串: {cookie_str}")
                 for cookie in cookie_str.split('; '):
                     if '=' in cookie:
                         name, value = cookie.split('=', 1)
@@ -185,7 +197,7 @@ class JcetCrawler(BaseCrawler):
                 
                 if 'Cookie' in headers:
                     cookie_str = headers['Cookie']
-                    self.logger.debug(f"从Cookie头提取的Cookie字符串: {cookie_str}")
+                    # self.logger.debug(f"从Cookie头提取的Cookie字符串: {cookie_str}")
                     for cookie in cookie_str.split('; '):
                         if '=' in cookie:
                             name, value = cookie.split('=', 1)
@@ -199,7 +211,7 @@ class JcetCrawler(BaseCrawler):
             required_cookies = ['JSESSIONID', 'tenantId', 'fine_remember_login']
             missing_cookies = [cookie for cookie in required_cookies if cookie not in cookies]
             if missing_cookies:
-                self.logger.error(f"缺少必要的Cookie: {', '.join(missing_cookies)}")
+                self.logger.warning(f"缺少必要的Cookie: {', '.join(missing_cookies)}")
                 return {}
             
             self.logger.debug(f"提取的Cookie: {cookies}")
@@ -209,7 +221,7 @@ class JcetCrawler(BaseCrawler):
             self.logger.error(f"从cURL命令提取Cookie失败: {str(e)}")
             self.logger.exception("详细错误信息:")
             return {}
-    
+
     def update_cookies_from_file(self) -> bool:
         """
         从cookie.txt文件更新Cookie
@@ -259,12 +271,13 @@ class JcetCrawler(BaseCrawler):
         保存Cookie到文件
         """
         try:
-            cookie_path = r'config\jcet_cookies.json'
+            cookie_path = Path(os.path.abspath(self.COOKIE_FILE))
+            cookie_path.parent.mkdir(parents=True, exist_ok=True)
             
             with open(cookie_path, 'w', encoding='utf-8') as f:
                 json.dump(cookies, f, indent=2, ensure_ascii=False)
             
-            self.logger.debug(f"Cookie已保存到: {cookie_path}")
+            # self.logger.debug(f"Cookie已保存到: {cookie_path}")
         except Exception as e:
             self.logger.error(f"保存Cookie失败: {str(e)}")
             raise
@@ -274,8 +287,8 @@ class JcetCrawler(BaseCrawler):
         从文件加载Cookie
         """
         try:
-            cookie_path = r'config\jcet_cookies.json'
-            if not os.path.exists(cookie_path):
+            cookie_path = Path(os.path.abspath(self.COOKIE_FILE))
+            if not cookie_path.exists():
                 self.logger.error(f"Cookie文件不存在: {cookie_path}")
                 return {}
                 
@@ -293,7 +306,7 @@ class JcetCrawler(BaseCrawler):
         except Exception as e:
             self.logger.error(f"加载Cookie失败: {str(e)}")
             return {}
-        
+
     def check_login_status(self) -> bool:
         """
         检查登录状态
@@ -302,11 +315,10 @@ class JcetCrawler(BaseCrawler):
             # 尝试访问需要登录的接口
             test_url = f"{self.BASE_URL}/v10/entry/access/old-platform-reportlet-entry-1040?width=1624&height=235"
             response = self.session.get(test_url, headers=self.headers, verify=False)
-            
             # 记录响应详情以便调试
-            self.logger.debug(f"登录状态检查响应码: {response.status_code}")
-            self.logger.debug(f"响应头: {dict(response.headers)}")
-            self.logger.debug(f"响应内容: {response.text[:200]}")  # 只记录前200个字符
+            # self.logger.debug(f"登录状态检查响应码: {response.status_code}")
+            # self.logger.debug(f"响应头: {dict(response.headers)}")
+            # self.logger.debug(f"响应内容: {response.text[:200]}") 
             
             # 检查响应状态和内容
             if response.status_code == 200:
@@ -356,8 +368,7 @@ class JcetCrawler(BaseCrawler):
             self.logger.debug("尝试使用Cookie登录...")
             
             # 检查cookie.txt是否存在，优先从curl命令更新Cookie
-            CURL_FILE = r'config\cookies.txt'
-            if os.path.isfile(CURL_FILE):
+            if os.path.isfile(self.CURL_FILE):
                 self.logger.debug("发现cookie.txt文件，尝试更新Cookie...")
                 if self.update_cookies_from_file():
                     cookies = self.load_cookies()
@@ -425,8 +436,8 @@ class JcetCrawler(BaseCrawler):
             for cookie in session_cookies[:-1]:
                 self.session.cookies.clear(cookie.domain, cookie.path, cookie.name)
             self.logger.debug(f"清理旧的sessionID Cookie，保留最新的: {newest_cookie.value}")
-            
-    def get_wip_data(self) -> bool:
+    
+    def get_wip_data(self) -> Any:
         """
         获取WIP数据并保存为Excel
         
@@ -436,8 +447,8 @@ class JcetCrawler(BaseCrawler):
         try:
             # 清理重复的sessionID Cookie
             self._clean_session_cookies()
-            
-            # 获取sessionID
+
+            # 确保sessionID存在
             session_id = self.session.cookies.get('sessionID')
             if not session_id:
                 self.logger.error("缺少sessionID，需要重新登录")
@@ -453,70 +464,19 @@ class JcetCrawler(BaseCrawler):
                 'X-Requested-With': 'XMLHttpRequest',
                 'Referer': f'{self.BASE_URL}/v10/entry/access/old-platform-reportlet-entry-1040?width=1624&height=312'
             })
-            
-            # 步骤1: 提交查询参数
-            params_url = f"{self.BASE_URL}/view/report"
-            params_data = {
-                "__parameters__": {
-                    "CUSTDEVICE": "",
-                    "LABELCUSTDEVICE": "[5ba2][6237][578b][53f7]:",
-                    "FZXS": "",
-                    "LABELFZXS": "[5c01][88c5][5f62][5f0f]:",
-                    "PO": "",
-                    "LABELPO": "[8ba2][5355][53f7]:"
-                },
-                "_": int(datetime.now().timestamp() * 1000)
-            }
-            
-            response = self.session.post(
-                f"{params_url}?op=fr_dialog&cmd=parameters_d",
-                json=params_data,
-                headers=self.headers,
-                verify=False
-            )
-            
-            self.logger.debug(f"参数提交响应: {response.text}")
-            if response.status_code != 200 or 'success' not in response.text.lower():
-                self.logger.error("参数提交失败")
-                return False
-                
-            # 步骤2: 提交网页信息
-            preview_url = f"{self.BASE_URL}/preview/info/collect"
-            preview_data = {
-                "webInfo": {
-                    "webResolution": "1920*1080",
-                    "fullScreen": 0
-                }
-            }
-            
-            response = self.session.post(
-                preview_url,
-                json=preview_data,
-                headers=self.headers,
-                verify=False
-            )
-            
-            self.logger.debug(f"网页信息提交响应: {response.text}")
-            if response.status_code != 200 or 'success' not in response.text.lower():
-                self.logger.error("网页信息提交失败")
-                return False
-                
-            # 步骤3: 获取表格数据
+        
+            # 获取表格数据
             timestamp = int(datetime.now().timestamp() * 1000)
             report_url = f"{self.BASE_URL}/view/report"
             report_params = {
                 "_": timestamp,
-                "__boxModel__": "true",
+                "__boxModel__": "false",
                 "op": "fr_view",
                 "cmd": "view_content",
-                "cid": f"d3c43ee69a8d7208f0dc27529ae893f8#{timestamp-1000}#7990e3a3",
+                "cid": "d3c43ee69a8d7208f0dc27529ae893f8#1744355701805#7f69b963",
                 "reportIndex": "0",
                 "iid": f"0.{str(timestamp)[-11:]}"
             }
-            
-            # 确保fine_auth_token存在于Cookie中
-            if 'fine_auth_token' not in self.session.cookies:
-                self.session.cookies.set('fine_auth_token', self.access_token)
             
             response = self.session.get(
                 report_url,
@@ -524,39 +484,107 @@ class JcetCrawler(BaseCrawler):
                 headers=self.headers,
                 verify=False
             )
-            
-            self.logger.debug(f"表格数据响应状态码: {response.status_code}")
-            self.logger.debug(f"表格数据响应头: {dict(response.headers)}")
+
+            # 确保fine_auth_token存在于Cookie中
+            if 'fine_auth_token' not in self.session.cookies:
+                self.session.cookies.set('fine_auth_token', self.access_token)
             
             if response.status_code != 200:
                 self.logger.error("获取表格数据失败")
                 return False
                 
-            # 检查响应内容
-            if 'Oops' in response.text or '出错啦' in response.text:
-                if 'SessionID' in response.text and ('not exist' in response.text or 'time out' in response.text):
-                    self.logger.error("Session已失效，尝试重新登录")
-                    if self.login():
-                        return self.get_wip_data()  # 重新尝试获取数据
-                    return False
-                self.logger.error("获取表格数据出错")
+            # 解析JSON获取HTML内容
+            data = json.loads(response.text)
+            html = data['html']
+
+            # 使用BeautifulSoup解析HTML
+            soup = BeautifulSoup(html, 'html.parser')
+
+            # 找到表格主体 - 使用第二个匹配的表格（包含数据的表格）
+            tables = soup.find_all('table', class_='x-table', attrs={'style': lambda x: x and 'width:2592px' in x})
+            if len(tables) < 2:
+                self.logger.error("未找到数据表格")
                 return False
                 
-            # 解析HTML响应获取表格数据
-            if '<table' not in response.text:
-                self.logger.error("响应中未找到表格数据")
-                return False
-                
-            # TODO: 使用pandas或BeautifulSoup解析HTML表格数据
-            # 保存原始HTML以供调试
-            with open('debug_table.html', 'w', encoding='utf-8') as f:
-                f.write(response.text)
-                
-            self.logger.debug("成功获取表格数据")
-            return True
+            table = tables[1]  # 使用第二个表格
+
+            # 获取表头
+            headers = []
+            header_row = tables[0].find('tr')  # 使用第一个表格的表头
+            for td in header_row.find_all('td'):
+                div = td.find('div')
+                if div:
+                    headers.append(div.text.strip())
+
+            # 获取数据行
+            data_rows = []
+            for row in table.find_all('tr'):
+                row_data = []
+                for td in row.find_all('td'):
+                    div = td.find('div')
+                    if div:
+                        text = div.text.strip()
+                        # 移除特殊字符和多余的空格
+                        text = ' '.join(text.split())
+                        row_data.append(text)
+                    else:
+                        row_data.append('')
+                if len(row_data) == len(headers) and any(row_data):  # 只添加非空行且列数匹配的行
+                    # 跳过"总计"行
+                    if not row_data[0].startswith('总计'):
+                        data_rows.append(row_data)
+
+            # 创建DataFrame并保存到Excel
+            df = pd.DataFrame(data_rows, columns=headers)
+            df.columns = [' '.join(col.split()) for col in df.columns]  # 清理列名
+
+            # 获取输出目录
+            output_dir = os.getenv("JCET_OUTPUT_DIR")
+            os.makedirs(output_dir, exist_ok=True)
+
+            # 生成文件名
+            date_str = datetime.now().strftime("%Y%m%d")
+            file_path = os.path.join(output_dir, f'长电科技_{date_str}.xlsx')
+
+            # 将数据转换为DataFrame并保存为Excel
+            df.to_excel(file_path, index=False)
+            
+            self.logger.info(f"成功获取并保存表格数据，共 {len(df)} 行")
+            return file_path
             
         except Exception as e:
             self.logger.error(f"获取WIP数据失败: {str(e)}")
             self.logger.exception("详细错误信息:")
             return False
+    
+    def run(self) -> bool:
+        """
+        运行爬虫任务
+        """
+        if not self.login():
+            return False
+        try:
+            filepath = self.get_wip_data()
+
+            jcet_wip_handler = JcetWipHandler()
+            df = jcet_wip_handler.process()
+            
+            # 更新数据库
+            wip_assy_bll = WipAssyBLL()
+            wip_assy_bll.update_supplier_progress(df.to_dict(orient="records"))
+
+            self.close()
+            # 移动文件,若存在则覆盖
+            target_path = os.getenv("JCET_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}"
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            move_file(filepath, target_path)
+
+            return True
+        except Exception as e:
+            self.logger.error(f"长电科技进度表处理失败: {str(e)}")
+            move_file(filepath, os.getenv("JCET_OUTPUT_DIR").replace("pending", "failed")+f"/{os.path.basename(filepath)}")
+            return False
+        
+        
 

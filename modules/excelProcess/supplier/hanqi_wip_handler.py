@@ -48,7 +48,7 @@ class HanqiWipHandler(BaseDeliveryExcelHandler):
             try:
                 df = pd.read_excel(attachments[0], header=0)
 
-                self.logger.debug(df)
+                # self.logger.debug(df)
                 
                 # 检查DataFrame是否为空
                 if df.empty:

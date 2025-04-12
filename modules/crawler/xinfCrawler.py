@@ -4,6 +4,7 @@
 import os
 import pandas as pd
 from datetime import datetime
+from typing import Any
 
 from modules.dataBaseService.bll.wip_assy import WipAssyBLL
 from modules.crawler.base import BaseCrawler
@@ -73,7 +74,7 @@ class XinfCrawler(BaseCrawler):
             self.logger.error(f"登录失败: {str(e)}")
             return False
 
-    def get_wip_data(self) -> bool:
+    def get_wip_data(self) -> Any:
         """
         获取WIP数据并保存为Excel
         
@@ -177,7 +178,7 @@ class XinfCrawler(BaseCrawler):
 
             self.close()
 
-             # 移动文件,若存在则覆盖
+            # 移动文件,若存在则覆盖
             target_path = os.getenv("XINF_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}"
             if os.path.exists(target_path):
                 os.remove(target_path)

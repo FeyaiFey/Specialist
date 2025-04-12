@@ -13,6 +13,7 @@ from utils.logger import Logger
 from modules.crawler.base import BaseCrawler
 from modules.crawler.xinfCrawler import XinfCrawler
 from modules.crawler.hjtcCrawler import HJTCCrawler
+from modules.crawler.jcetCrawler import JcetCrawler
 
 class CrawlerService:
     """爬虫任务服务类"""
@@ -22,7 +23,8 @@ class CrawlerService:
         self.logger = Logger().get_logger('crawlerService')
         self.crawlers: Dict[str, Type[BaseCrawler]] = {
             'xinf': XinfCrawler,
-            'hjtc': HJTCCrawler
+            'hjtc': HJTCCrawler,
+            'jcet': JcetCrawler
         }
         # 创建后台调度器
         self.scheduler = BackgroundScheduler()

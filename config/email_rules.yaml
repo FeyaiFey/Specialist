@@ -24,7 +24,7 @@ rules:
     allowed_extensions:    # 允许下载的附件类型
       - .xlsx
       - .xls
-    enabled: true    # 是否启用该规则
+    enabled: false    # 是否启用该规则
 
   - name: 封装送货单-山东汉旗   
     category: "封装送货单"
@@ -51,7 +51,7 @@ rules:
     allowed_extensions:    
       - .xlsx
       - .xls
-    enabled: true   
+    enabled: false   
 
   - name: 封装送货单-江苏芯丰   
     category: "封装送货单"
@@ -79,7 +79,7 @@ rules:
     allowed_extensions:    
       - .xlsx
       - .xls
-    enabled: true
+    enabled: false
 
   - name: 封装送货单-江苏恩微   
     category: "封装送货单"
@@ -106,7 +106,7 @@ rules:
     allowed_extensions:    
       - .xlsx
       - .xls
-    enabled: true
+    enabled: false
 
   - name: 测试报告-无锡华宇   
     category: "测试报告"
@@ -135,7 +135,7 @@ rules:
       - .xls
       - .rar
       - .zip
-    enabled: true
+    enabled: false
 
   - name: 测试报告-苏州拓芯威   
     category: "测试报告"
@@ -160,7 +160,7 @@ rules:
       - .xls
       - .rar
       - .zip
-    enabled: true
+    enabled: false
 
   - name: 测试报告-苏工院   
     category: "测试报告"
@@ -185,7 +185,7 @@ rules:
       - .xls
       - .rar
       - .zip
-    enabled: true
+    enabled: false
 
   - name: 封装进度表-池州华宇   
     category: "封装进度表"

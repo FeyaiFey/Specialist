@@ -80,7 +80,7 @@ class CrawlerService:
             # 添加定时任务
             self.job = self.scheduler.add_job(
                 func=self.run_all_crawlers,
-                trigger=IntervalTrigger(minutes=hours),
+                trigger=IntervalTrigger(hours=hours),
                 id='crawler_job',
                 name='定时爬虫任务',
                 replace_existing=True,

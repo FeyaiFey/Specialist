@@ -116,15 +116,12 @@ class HisemiWipHandler(BaseDeliveryExcelHandler):
 
             df = df[data_format]
 
-            # print(df)
-
-            self.logger.debug(df)
-            self.logger.debug(f"成功处理池州华宇Excel文件")
+            self.logger.debug(f"成功处理池州华宇WIP文件")
 
             return df
 
         except Exception as e:
-            self.logger.error(f"处理Excel文件时发生错误: {e}")
+            self.logger.error(f"处理池州华宇WIP文件时发生错误: {e}")
             return None
         
     

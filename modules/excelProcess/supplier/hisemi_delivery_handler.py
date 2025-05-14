@@ -186,5 +186,5 @@ class HisemiDeliveryHandler(BaseDeliveryExcelHandler):
             return data_dict
             
         except Exception as e:
-            self.logger.error(f"提取送货单数据失败: {Path(excel_path).name} - {str(e)}")
+            self.logger.error(f"提取池州华宇送货单数据失败: {Path(excel_path).name} - {str(e)}")
             return {} 

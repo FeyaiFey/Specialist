@@ -118,7 +118,7 @@ class XinfengWipHandler():
 
             df = df[self.data_format]
 
-            self.logger.debug(f"处理江苏芯丰的WIP文件成功: {df}")
+            self.logger.debug(f"处理江苏芯丰的WIP文件成功")
 
             return df
         except Exception as e:

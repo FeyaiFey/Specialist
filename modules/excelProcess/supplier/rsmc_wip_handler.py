@@ -61,8 +61,6 @@ class RsmcHandler(BaseDeliveryExcelHandler):
                 missing_columns = set(name_values) - set(df.columns)
                 if missing_columns:
                     self.logger.error(f"Excel文件缺少必要的列: {missing_columns}")
-                    self.logger.debug(f"现有列: {list(df.columns)}")
-                    self.logger.debug(f"需要的列: {name_values}")
                     return None
                     
             except ValueError as e:
@@ -76,8 +74,6 @@ class RsmcHandler(BaseDeliveryExcelHandler):
                 df = df[name_values]
             except KeyError as e:
                 self.logger.error(f"选择列时出错: {str(e)}")
-                self.logger.debug(f"现有列: {list(df.columns)}")
-                self.logger.debug(f"尝试选择的列: {name_values}")
                 return None
 
             # 创建反向映射字典
@@ -88,7 +84,6 @@ class RsmcHandler(BaseDeliveryExcelHandler):
                 df.rename(columns=reverse_names, inplace=True)
             except Exception as e:
                 self.logger.error(f"重命名列时出错: {str(e)}")
-                self.logger.debug(f"重命名映射: {reverse_names}")
                 return None
 
             df["supplier"] = "荣芯"

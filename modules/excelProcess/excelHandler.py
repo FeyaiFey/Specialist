@@ -90,9 +90,11 @@ class ExcelHandler:
             elif match_result.get('category') in ['封装进度表', '晶圆进度表']:
                 self.logger.debug(f"开始处理供应商[{supplier}]的进度表")
                 result = handler.process(match_result)
-                return result
-            
-                
+                if result is None:
+                    self.logger.warning(f"供应商[{supplier}]的进度表处理未返回数据")
+                    return None
+                else:
+                    return result
         except Exception as e:
-            self.logger.error(f"处理送货单Excel文件时出错: {str(e)}")
+            self.logger.error(f"处理{supplier}的{category}Excel文件时出错: {str(e)}")
             return {}

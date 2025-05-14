@@ -47,8 +47,6 @@ class HanqiWipHandler(BaseDeliveryExcelHandler):
             # 读取Excel文件
             try:
                 df = pd.read_excel(attachments[0], header=0)
-
-                # self.logger.debug(df)
                 
                 # 检查DataFrame是否为空
                 if df.empty:
@@ -112,6 +110,8 @@ class HanqiWipHandler(BaseDeliveryExcelHandler):
 
             df[["在线合计","仓库库存"]] = df[["在线合计","仓库库存"]].apply(pd.to_numeric, errors='coerce').fillna(0)
 
+            df = df[['订单号', '研磨', '切割', '待装片', '装片', '银胶固化', '等离子清洗1', '键合', '三目检', '等离子清洗2', '塑封', '后固化', '回流焊', '电镀', '打印', '后切割', '切筋成型', '外观检', '测编打印', '包装', '待入库', '在线合计', '仓库库存', '扣留信息']]
+
             # 从后往前遍历numerical_columns，找到第一个值大于0的列名
             df["当前工序"] = df.apply(
                 lambda row: "STOCK" if row["仓库库存"] > 0 else next(
@@ -120,8 +120,6 @@ class HanqiWipHandler(BaseDeliveryExcelHandler):
                 ),
                 axis=1
             )
-
-
 
             # 根据当前工序，计算预计完成时间 汉旗要加快递2天
             df["预计交期"] = df["当前工序"].apply(
@@ -156,15 +154,12 @@ class HanqiWipHandler(BaseDeliveryExcelHandler):
 
             df = df[data_format]
 
-            # print(df)
-
-            self.logger.debug(df)
-            self.logger.debug(f"成功处理池州华宇Excel文件")
+            self.logger.debug(f"成功处理山东汉旗Excel文件")
 
             return df
 
         except Exception as e:
-            self.logger.error(f"处理Excel文件时发生错误: {e}")
+            self.logger.error(f"处理山东汉旗Excel文件时发生错误: {e}")
             return None
         
     

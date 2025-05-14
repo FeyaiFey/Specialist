@@ -25,8 +25,8 @@ class JcetWipHandler():
         step = self.config["关键字段映射"].keys()
         df_raw = pd.DataFrame(columns=step)
 
-        if not  os.path.exists(self.file_dir):
-            self.logger.error(f"文件不存在: {self.file_dir}")
+        if not os.path.exists(self.file_dir):
+            self.logger.warning(f"文件不存在: {self.file_dir}")
             return None
         
         try:
@@ -34,7 +34,7 @@ class JcetWipHandler():
             df = pd.read_excel(self.file_dir, sheet_name="Sheet1")
             # 检查DataFrame是否为空
             if df.empty:
-                self.logger.error("Excel文件内容为空")
+                self.logger.warning("Excel文件内容为空")
                 return None
             
             names = list(self.config["关键字段映射"].keys())
@@ -55,8 +55,6 @@ class JcetWipHandler():
 
             df["扣留信息"] = pd.NaT
 
-            self.logger.debug(df)
-
             numerical_columns = list(self.craft_forecast.keys())
             # 只处理存在的数值列
             existing_numerical_columns = [col for col in numerical_columns if col in df.columns]
@@ -68,8 +66,6 @@ class JcetWipHandler():
             # 处理在线合计和仓库库存
             df["在线合计"] = df["在线合计"].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce').fillna(0)
             df["仓库库存"] = df["仓库库存"].astype(str).str.replace(',', '').apply(pd.to_numeric, errors='coerce').fillna(0)
-
-            self.logger.debug(df)
 
             # 从后往前遍历numerical_columns，找到第一个值大于0的列名
             df["当前工序"] = df.apply(
@@ -117,7 +113,7 @@ class JcetWipHandler():
 
             return df
         except Exception as e:
-            self.logger.error(f"处理江苏芯丰的WIP文件失败: {e}")
+            self.logger.error(f"处理长电科技WIP文件失败: {e}")
             return None
         
         

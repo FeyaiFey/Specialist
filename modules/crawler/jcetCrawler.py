@@ -565,9 +565,25 @@ class JcetCrawler(BaseCrawler):
             return False
         try:
             filepath = self.get_wip_data()
+            if not filepath:
+                self.logger.error("获取长电科技WIP数据失败，未返回有效文件路径")
+                return False
 
+            # 创建处理器并设置正确的文件路径
             jcet_wip_handler = JcetWipHandler()
+            # 更新处理器中的文件路径，确保使用刚下载的文件
+            jcet_wip_handler.file_dir = filepath
+            
             df = jcet_wip_handler.process()
+            
+            # 检查处理结果是否为None
+            if df is None:
+                self.logger.warning("长电科技WIP数据处理失败，返回了None")
+                # 移动文件到失败目录
+                failed_dir = os.getenv("JCET_OUTPUT_DIR").replace("pending", "failed")
+                os.makedirs(failed_dir, exist_ok=True)
+                move_file(filepath, os.path.join(failed_dir, os.path.basename(filepath)))
+                return False
             
             # 更新数据库
             wip_assy_bll = WipAssyBLL()
@@ -575,7 +591,9 @@ class JcetCrawler(BaseCrawler):
 
             self.close()
             # 移动文件,若存在则覆盖
-            target_path = os.getenv("JCET_OUTPUT_DIR").replace("pending", "processed")+f"/{os.path.basename(filepath)}"
+            target_dir = os.getenv("JCET_OUTPUT_DIR").replace("pending", "processed")
+            os.makedirs(target_dir, exist_ok=True)
+            target_path = os.path.join(target_dir, os.path.basename(filepath))
             if os.path.exists(target_path):
                 os.remove(target_path)
             move_file(filepath, target_path)
@@ -583,7 +601,11 @@ class JcetCrawler(BaseCrawler):
             return True
         except Exception as e:
             self.logger.error(f"长电科技进度表处理失败: {str(e)}")
-            move_file(filepath, os.getenv("JCET_OUTPUT_DIR").replace("pending", "failed")+f"/{os.path.basename(filepath)}")
+            # 确保filepath存在再移动
+            if 'filepath' in locals() and filepath:
+                failed_dir = os.getenv("JCET_OUTPUT_DIR").replace("pending", "failed")
+                os.makedirs(failed_dir, exist_ok=True)
+                move_file(filepath, os.path.join(failed_dir, os.path.basename(filepath)))
             return False
         
         

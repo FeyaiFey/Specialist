@@ -1,18 +1,20 @@
 curl 'https://jcetreport.jcetglobal.com:8995/WebReport/decision/login' \
   -H 'Accept: application/json, text/javascript, */*; q=0.01' \
-  -H 'Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7' \
+  -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6' \
+  -H 'Cache-Control: no-cache' \
   -H 'Connection: keep-alive' \
   -H 'Content-Type: application/json' \
-  -b 'JSESSIONID=747E894ACE1E06B9F18AEE26D5FA8C3C' \
+  -b 'JSESSIONID=91D3E83222DCA9660A6E81442AE5A533; tenantId=default; Hm_lvt_e5fdcd9bdb4e22e58e9f532071f94460=1744187325; _ga=GA1.1.1923663312.1744187325; _lfa=LF1.1.1dbdd75e061b941d.1744187326300; _ga_96KNBTES2M=GS1.1.1744187325.1.1.1744187355.0.0.0; sessionID=249c908a-8290-4b1b-9763-864082c8dd64; fine_remember_login=-2' \
   -H 'Origin: https://jcetreport.jcetglobal.com:8995' \
-  -H 'Referer: https://jcetreport.jcetglobal.com:8995/WebReport/decision/login?origin=d5c5d68b-c568-4ccb-a317-cdd8be37cfd9' \
+  -H 'Pragma: no-cache' \
+  -H 'Referer: https://jcetreport.jcetglobal.com:8995/WebReport/decision/login' \
   -H 'Sec-Fetch-Dest: empty' \
   -H 'Sec-Fetch-Mode: cors' \
   -H 'Sec-Fetch-Site: same-origin' \
-  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0' \
   -H 'X-Requested-With: XMLHttpRequest' \
-  -H 'sec-ch-ua: "Google Chrome";v="135", "Not-A.Brand";v="8", "Chromium";v="135"' \
+  -H 'sec-ch-ua: "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"' \
   -H 'sec-ch-ua-mobile: ?0' \
   -H 'sec-ch-ua-platform: "Windows"' \
   -H 'transEncryptLevel: 1' \
-  --data-raw '{"username":"A2-099","password":"XGbhfW2vhOcVUzuQS9ZZvuxB4Hm1WFgyu+0MdiuvxZLya4uUbpUfTAiaxyoUm4ObS3CuBTAswicD/BY99MdZPbyplYYfNbfhk+h0iVbB/oxmkJ1DsIKZ08Wa/qJLck+OlFth6a8+KZpRFP+AB92HGwoCHg2jNTAYHRLF0SDpN2mO5JjFsZ/kbDvwLQV8j9PIVD8j9b1MCTKnWrB4cpkwpLf0ZwNw6Qt0ZmlDtWFNO6MD2xI0XGIIpS5qiHh+ss1EY3tOX7bDAMGHo5MJ2T2J6rntTUuEsA7uGh4YB1JVlvtRwSXWhFjFn8iJi5KCMaaUQ/ov5Kdp5h1hHKLXA1asMw==","validity":-2,"sliderToken":"","origin":"d5c5d68b-c568-4ccb-a317-cdd8be37cfd9","encrypted":true}'
+  --data-raw '{"username":"A2-099","password":"fjONABX+HfGVQqYvUEyPmZYw9ZrB+RWSRbMGJB+0MLYvR/XRvMYx6PrWR21ZKgT4waz7tPIXaw6l1mcKK11QDbCsiUW/Zm2yFnmsKlVAl9+LF5JxKnoX5FeM1jIjf52bfubKztjERoD7zU7zfx3kE5eqji2ZA/pTXyTWPpSa474RjN7sG6SMUj1C0HZFEDnKgbuLnhbXDAQbFa3F+qEEVBgJ3/5bqM05arE3LN0KMTsnsSO1egjI2WgGo5r6DYq36DKkYYXag4JSwIeaZFaDAMG8buhe2i0RmWpF/JTNKqdg4Udcrf1Pr5TgDw4IQBBEWM9/PhzMWzr6lllyH0la7g==","validity":-2,"sliderToken":"","origin":"","encrypted":true}'

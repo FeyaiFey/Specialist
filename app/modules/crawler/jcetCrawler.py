@@ -116,7 +116,7 @@ class JcetCrawler(BaseCrawler):
                 verify=False
             )
             
-            # self.logger.debug(f"登录响应: {response.text}")
+            self.logger.debug(f"登录响应: {response.text}")
             
             if response.status_code == 200:
                 data = response.json()

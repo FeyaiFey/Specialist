@@ -67,5 +67,5 @@ XINF_OUTPUT_DIR="downloads/封装进度表/江苏芯丰"
 
 # 长电科技
 JCET_USERNAME="A2-099"
-JCET_PASSWORD="Tel68241373$"
+JCET_PASSWORD="Scb68241373!"
 JCET_OUTPUT_DIR="downloads/封装进度表/长电科技"

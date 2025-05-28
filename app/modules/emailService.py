@@ -516,11 +516,6 @@ class EmailService:
             
             # 构建目标文件路径
             target_file = os.path.join(processed_folder, os.path.basename(attachment_path))
-
-            # 如果文件名中包含"苏州华芯微电子股份有限公司的封装产品进展表"，则跳过处理
-            if "苏州华芯微电子股份有限公司的封装产品进展表" in os.path.basename(attachment_path):
-                self.logger.debug(f"跳过已存在的池州华宇进度表文件: {os.path.basename(attachment_path)}")
-                return
             
             # 剪切文件到成功处理目录
             shutil.move(attachment_path, target_file)
